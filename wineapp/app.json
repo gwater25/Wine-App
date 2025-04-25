@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "wineapp",
-    "slug": "wineapp",
+    "slug": "emptech-final-project",
     "version": "1.0.0",
     "entryPoint": "./App.js",
     "orientation": "portrait",
@@ -16,6 +16,12 @@
           "backgroundColor": "#ffffff"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "0aa9d955-aaf3-4a9b-891a-c15a1cad33be"
+      }
+    },
+    "owner": "garethwater"
   }
 }
