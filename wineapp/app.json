@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "wineapp",
+    "slug": "wineapp",
+    "version": "1.0.0",
+    "entryPoint": "./App.js",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "userInterfaceStyle": "automatic",
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    ]
+  }
+}
