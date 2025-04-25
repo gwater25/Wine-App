@@ -22,6 +22,15 @@
         "projectId": "0aa9d955-aaf3-4a9b-891a-c15a1cad33be"
       }
     },
-    "owner": "garethwater"
+    "owner": "garethwater",
+    "android": {
+      "package": "com.garethwater.emptechfinalproject"
+    },
+    "ios": {
+      "bundleIdentifier": "com.garethwater.emptechfinalproject",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    }
   }
 }
