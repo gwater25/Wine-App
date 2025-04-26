@@ -1,7 +1,15 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useWine } from '../context/WineContext';
+import { useInventory } from '../context/WineInventoryContext';
 import { FontAwesome } from '@expo/vector-icons';
 
 export default function WineDetailScreen() {
@@ -9,9 +17,22 @@ export default function WineDetailScreen() {
   const route = useRoute();
   const { wine } = route.params;
 
-  const { addToCellar, removeFromCellar, favorites, ratings, rateWine } = useWine();
+  const { ratings, rateWine } = useWine();
+  const { deleteWine } = useInventory();
 
-  const isSaved = favorites.some((w) => w.id === wine.id);
+  const confirmDelete = () => {
+    Alert.alert('Delete Wine', 'Are you sure you want to delete this wine?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: () => {
+          deleteWine(wine.id);
+          navigation.navigate('Main');
+        },
+      },
+    ]);
+  };
 
   return (
     <View style={styles.container}>
@@ -36,14 +57,17 @@ export default function WineDetailScreen() {
         </View>
 
         <TouchableOpacity
-          style={[styles.button, isSaved && styles.removeButton]}
-          onPress={() =>
-            isSaved ? removeFromCellar(wine.id) : addToCellar(wine)
-          }
+          style={styles.button}
+          onPress={() => navigation.navigate('AddWine', { wine })}
         >
-          <Text style={styles.buttonText}>
-            {isSaved ? 'Remove from Cellar' : 'Add to Cellar'}
-          </Text>
+          <Text style={styles.buttonText}>Edit Wine</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.button, styles.deleteButton]}
+          onPress={confirmDelete}
+        >
+          <Text style={styles.buttonText}>Delete Wine</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
@@ -70,7 +94,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
   },
-  removeButton: { backgroundColor: 'gray' },
+  deleteButton: {
+    backgroundColor: 'gray',
+  },
   buttonText: { color: 'white', fontWeight: 'bold', fontSize: 16 },
   back: { marginTop: 30 },
   backText: { fontSize: 16, color: '#888' },
