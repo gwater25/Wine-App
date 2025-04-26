@@ -1,26 +1,41 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const WineInventoryContext = createContext();
 
 export const WineInventoryProvider = ({ children }) => {
-  const [wines, setWines] = useState([
-    {
-      id: 1,
-      name: 'Cabernet Sauvignon',
-      type: 'Red',
-      brand: 'Brand A',
-      price: 20,
-      image: 'https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/47996575869489.5c594d0824159.jpg',
-    },
-    {
-      id: 2,
-      name: 'Chardonnay',
-      type: 'White',
-      brand: 'Brand B',
-      price: 25,
-      image: 'https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/47996575869489.5c594d0824159.jpg',
-    },
-  ]);
+  const [wines, setWines] = useState([]);
+
+  // Load wines from storage
+  useEffect(() => {
+    const loadWines = async () => {
+      try {
+        const storedWines = await AsyncStorage.getItem('wines');
+        if (storedWines) {
+          setWines(JSON.parse(storedWines));
+        }
+      } catch (error) {
+        console.error('Failed to load wines', error);
+      }
+    };
+
+    loadWines();
+  }, []);
+
+  // Save wines to storage when they change
+  useEffect(() => {
+    const saveWines = async () => {
+      try {
+        await AsyncStorage.setItem('wines', JSON.stringify(wines));
+      } catch (error) {
+        console.error('Failed to save wines', error);
+      }
+    };
+
+    if (wines.length > 0) {
+      saveWines();
+    }
+  }, [wines]);
 
   const addWine = (wine) => setWines((prev) => [...prev, wine]);
 

@@ -35,7 +35,6 @@ function MainTabNavigator() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Cellar" component={CellarScreen} />
-      <Stack.Screen name="Add Wine" component={AddWineScreen} />
       <Tab.Screen name="User" component={UserScreen} />
     </Tab.Navigator>
   );
@@ -51,6 +50,7 @@ export default function App() {
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Main" component={MainTabNavigator} />
             <Stack.Screen name="WineDetail" component={WineDetailScreen} />
+            <Stack.Screen name="AddWine" component={AddWineScreen} />
           </Stack.Navigator>
           </NavigationContainer>
           <Toast />
