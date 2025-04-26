@@ -11,6 +11,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { WineProvider } from './context/WineContext';
 import Toast from 'react-native-toast-message';
+import AddWineScreen from './screens/AddWineScreen';
+import { WineInventoryProvider } from './context/WineInventoryContext';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -22,6 +24,7 @@ function MainTabNavigator() {
         tabBarIcon: ({ color, size }) => {
           let iconName = route.name === 'Home' ? 'home' :
                          route.name === 'Cellar' ? 'wine' :
+                         route.name === 'Add Wine' ? 'wine':
                          'person';
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -32,6 +35,7 @@ function MainTabNavigator() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Cellar" component={CellarScreen} />
+      <Stack.Screen name="Add Wine" component={AddWineScreen} />
       <Tab.Screen name="User" component={UserScreen} />
     </Tab.Navigator>
   );
@@ -41,14 +45,16 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <WineProvider>
-        <NavigationContainer>
+        <WineInventoryProvider>
+          <NavigationContainer>
           <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Main" component={MainTabNavigator} />
             <Stack.Screen name="WineDetail" component={WineDetailScreen} />
           </Stack.Navigator>
-        </NavigationContainer>
-        <Toast />
+          </NavigationContainer>
+          <Toast />
+        </WineInventoryProvider>
       </WineProvider>
     </GestureHandlerRootView>
   );
