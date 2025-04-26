@@ -13,7 +13,7 @@ export default function WineDetailScreen() {
   const { favorites, addToCellar, removeFromCellar, ratings, rateWine } = useWine();
   const { deleteWine } = useInventory();
 
-  const isFavorited = wine && favorites.some((fav) => fav.id === wine.id);
+  const isFavorited = favorites.includes(wine.id);
 
   const confirmDelete = () => {
     Alert.alert('Delete Wine', 'Are you sure you want to delete this wine?', [

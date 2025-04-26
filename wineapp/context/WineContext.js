@@ -4,24 +4,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const WineContext = createContext();
 
-const migrateFavorites = (oldFavorites) => {
-  return oldFavorites.map((wine) => ({
-    ...wine,
-    stock: wine.stock !== undefined ? wine.stock : 0,
-  }));
-};
-
 export const WineProvider = ({ children }) => {
-  const [favorites, setFavorites] = useState([]);
+  const [favorites, setFavorites] = useState([]); // favorites are now wine IDs
   const [ratings, setRatings] = useState({});
 
-  // Load favorites from AsyncStorage if needed
   useEffect(() => {
     const loadFavorites = async () => {
       try {
         const storedFavorites = await AsyncStorage.getItem('favorites');
         if (storedFavorites) {
-          setFavorites(migrateFavorites(JSON.parse(storedFavorites)));
+          setFavorites(JSON.parse(storedFavorites));
         }
       } catch (error) {
         console.error('Failed to load favorites', error);
@@ -33,7 +25,7 @@ export const WineProvider = ({ children }) => {
 
   const addToCellar = (wine) => {
     setFavorites((prev) => {
-      const updated = [...prev, { ...wine, stock: wine.stock !== undefined ? wine.stock : 0 }];
+      const updated = [...prev, wine.id];
       AsyncStorage.setItem('favorites', JSON.stringify(updated));
       Toast.show({
         type: 'success',
@@ -47,13 +39,11 @@ export const WineProvider = ({ children }) => {
 
   const removeFromCellar = (wineId) => {
     setFavorites((prev) => {
-      const updated = prev.filter((wine) => wine.id !== wineId);
+      const updated = prev.filter((id) => id !== wineId);
       AsyncStorage.setItem('favorites', JSON.stringify(updated));
-      const removedWine = prev.find((wine) => wine.id === wineId);
       Toast.show({
         type: 'info',
         text1: 'Removed from Cellar',
-        text2: removedWine ? `${removedWine.name} has been removed.` : '',
         position: 'bottom',
       });
       return updated;
