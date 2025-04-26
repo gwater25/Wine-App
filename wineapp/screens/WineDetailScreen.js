@@ -42,6 +42,7 @@ export default function WineDetailScreen() {
         <Text style={styles.name}>{wine.name}</Text>
         <Text style={styles.meta}>{wine.type} · {wine.brand}</Text>
         <Text style={styles.price}>${wine.price}</Text>
+        <Text style={styles.stock}>Stock: {wine.stock} bottles</Text>
 
         <View style={styles.stars}>
           {[1, 2, 3, 4, 5].map((star) => (
@@ -96,6 +97,11 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     backgroundColor: 'gray',
+  },
+  stock: {
+    fontSize: 18,
+    color: '#555',
+    marginTop: 8,
   },
   buttonText: { color: 'white', fontWeight: 'bold', fontSize: 16 },
   back: { marginTop: 30 },

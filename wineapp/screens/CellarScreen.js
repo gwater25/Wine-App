@@ -1,82 +1,38 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useWine } from '../context/WineContext';
+import WineList from '../components/WineList';
 
 export default function CellarScreen() {
-  const { favorites, removeFromCellar } = useWine();
-
-  const renderItem = ({ item }) => (
-    <View style={styles.card}>
-      <View style={{ flex: 1 }}>
-        <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.detail}>{item.type} · {item.region}</Text>
-      </View>
-      <TouchableOpacity
-        onPress={() => removeFromCellar(item.id)}
-        style={styles.removeButton}
-      >
-        <Text style={styles.removeText}>Remove</Text>
-      </TouchableOpacity>
-    </View>
-  );
+  const { favorites } = useWine();
 
   return (
-    <View style={styles.container}>
+    <View style={styles.cellarContainer}>
       {favorites.length === 0 ? (
-        <Text style={styles.emptyText}>Your cellar is empty. Add some wine!</Text>
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyText}>Your cellar is empty. Add some wines!</Text>
+        </View>
       ) : (
-        <FlatList
-          data={favorites}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderItem}
-          contentContainerStyle={styles.list}
-        />
+        <WineList wines={favorites} selectedType={null} />
       )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  cellarContainer: {
+    marginTop: 35,
     backgroundColor: 'crimson',
-    padding: 10,
+    flex: 1,
   },
-  list: {
-    paddingBottom: 20,
-  },
-  card: {
-    flexDirection: 'row',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 10,
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  detail: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 4,
-  },
-  removeButton: {
-    backgroundColor: 'gray',
-    paddingVertical: 6,
-    paddingHorizontal: 14,
-    borderRadius: 8,
-  },
-  removeText: {
-    color: 'white',
-    fontWeight: 'bold',
   },
   emptyText: {
-    marginTop: 50,
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
     textAlign: 'center',
   },
 });

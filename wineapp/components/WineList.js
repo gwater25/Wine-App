@@ -42,6 +42,7 @@ const WineList = ({ wines, selectedType }) => {
             <Text style={styles.name}>{item.name}</Text>
             <Text style={styles.detail}>{item.type} · {item.brand}</Text>
             <Text style={styles.price}>${item.price}</Text>
+            <Text style={styles.stock}>Stock: {item.stock} bottles</Text>
 
             <View style={styles.stars}>
               {[1, 2, 3, 4, 5].map((star) => (
@@ -137,6 +138,11 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: {
     backgroundColor: 'gray',
+  },
+  stock: {
+    fontSize: 12,
+    color: '#555',
+    marginTop: 2,
   },
 });
 
