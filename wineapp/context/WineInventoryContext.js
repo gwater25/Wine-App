@@ -25,6 +25,7 @@ export const WineInventoryProvider = ({ children }) => {
     },
   ]);
 
+
   // Load wines from storage
   useEffect(() => {
     const loadWines = async () => {

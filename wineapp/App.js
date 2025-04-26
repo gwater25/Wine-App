@@ -14,8 +14,10 @@ import Toast from 'react-native-toast-message';
 import AddWineScreen from './screens/AddWineScreen';
 import { WineInventoryProvider } from './context/WineInventoryContext';
 
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
 
 function MainTabNavigator() {
   return (
@@ -31,8 +33,8 @@ function MainTabNavigator() {
         tabBarStyle: { backgroundColor: 'cornsilk' },
         tabBarActiveTintColor: 'crimson',
         headerShown: false,
-      })}
-    >
+      })}>
+
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Cellar" component={CellarScreen} />
       <Tab.Screen name="User" component={UserScreen} />

@@ -8,8 +8,10 @@ export default function CellarScreen() {
   const { favorites } = useWine();
   const { wines } = useInventory();
 
+  
   // Map favorite IDs to full wine objects
   const favoriteWines = wines.filter((wine) => favorites.includes(wine.id));
+
 
   return (
     <View style={styles.cellarContainer}>
@@ -23,6 +25,7 @@ export default function CellarScreen() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   cellarContainer: {
