@@ -1,18 +1,27 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import WineList from '../components/WineList';
-import { useInventory } from '../context/WineInventoryContext';
 import { Ionicons } from '@expo/vector-icons';
+import { useInventory } from '../context/WineInventoryContext';
 
 const HomeScreen = () => {
   const [selectedType, setSelectedType] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigation = useNavigation();
   const { wines } = useInventory();
 
   const handleTypePress = (type) => {
     setSelectedType(type === selectedType ? null : type);
   };
+
+  const filteredWines = wines.filter((wine) => {
+    const matchesType = selectedType ? wine.type === selectedType : true;
+    const matchesSearch = [wine.name, wine.type, wine.brand].some((field) =>
+      field.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    return matchesType && matchesSearch;
+  });
 
   return (
     <View style={styles.homeContainer}>
@@ -31,11 +40,18 @@ const HomeScreen = () => {
         ))}
       </View>
 
-      <WineList wines={wines} selectedType={selectedType} />
+      <TextInput
+        style={styles.search}
+        placeholder="Search wines by name, type, or brand..."
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
+
+      <WineList wines={filteredWines} selectedType={selectedType} />
 
       <TouchableOpacity
         style={styles.fab}
-        onPress={() => navigation.navigate('Add Wine')}
+        onPress={() => navigation.navigate('AddWine')}
       >
         <Ionicons name="add" size={28} color="white" />
       </TouchableOpacity>
@@ -66,6 +82,13 @@ const styles = StyleSheet.create({
   tabText: {
     color: 'black',
     fontWeight: 'bold',
+  },
+  search: {
+    backgroundColor: 'white',
+    margin: 10,
+    padding: 10,
+    borderRadius: 8,
+    fontSize: 16,
   },
   fab: {
     position: 'absolute',
