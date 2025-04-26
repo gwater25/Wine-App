@@ -43,7 +43,7 @@ export default function AddWineScreen() {
   };
 
   const handleSubmit = () => {
-    const { name, type, brand, price } = form;
+    const { name, type, brand, price, stock } = form;
 
     if (!name || !type || !brand || !price || !stock) {
       Alert.alert('Validation', 'Please fill out all fields');
