@@ -4,6 +4,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { useWine } from '../context/WineContext';
 import { useInventory } from '../context/WineInventoryContext';
 import { FontAwesome } from '@expo/vector-icons';
+import { MotiView } from 'moti';
 
 export default function WineDetailScreen() {
   const navigation = useNavigation();
@@ -66,14 +67,18 @@ export default function WineDetailScreen() {
         <Text style={styles.price}>${wine.price}</Text>
         <Text style={styles.stock}>Stock: {wine.stock ?? 0} bottles</Text>
 
-        {wine.stock !== undefined && wine.stock < 3 && (
-          <View style={styles.warning}>
-            <Text style={styles.warningText}>
+        {wine.stock !== undefined && wine.stock <3 && (
+        <MotiView 
+         from={{ opacity: 0, translateY: -10 }}
+         animate={{ opacity: 1, translateY: 0 }}
+         transition={{ type: 'spring', damping: 15}}
+         style={styles.warning}
+        >
+          <Text style={styles.warningText}>
               ⚠️ Low Stock! Only {wine.stock} bottles left.
             </Text>
-          </View>
+        </MotiView>
         )}
-        
         <View style={styles.stars}>
           {[1, 2, 3, 4, 5].map((star) => (
             <TouchableOpacity key={star} onPress={() => rateWine(wine.id, star)}>
