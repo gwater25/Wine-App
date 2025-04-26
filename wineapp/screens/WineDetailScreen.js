@@ -64,8 +64,16 @@ export default function WineDetailScreen() {
 
         <Text style={styles.meta}>{wine.type} · {wine.brand}</Text>
         <Text style={styles.price}>${wine.price}</Text>
-        <Text style={styles.stock}>stock: {wine.stock ?? 0} bottles</Text>
+        <Text style={styles.stock}>Stock: {wine.stock ?? 0} bottles</Text>
 
+        {wine.stock !== undefined && wine.stock < 3 && (
+          <View style={styles.warning}>
+            <Text style={styles.warningText}>
+              ⚠️ Low Stock! Only {wine.stock} bottles left.
+            </Text>
+          </View>
+        )}
+        
         <View style={styles.stars}>
           {[1, 2, 3, 4, 5].map((star) => (
             <TouchableOpacity key={star} onPress={() => rateWine(wine.id, star)}>
