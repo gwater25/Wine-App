@@ -23,6 +23,7 @@ export default function AddWineScreen() {
     type: '',
     brand: '',
     price: '',
+    stock: '',
   });
 
   useEffect(() => {
@@ -32,6 +33,7 @@ export default function AddWineScreen() {
         type: editing.type,
         brand: editing.brand,
         price: editing.price.toString(),
+        stock: editing.stock !== undefined ? editing.stock.toString() : '0',
       });
     }
   }, [editing]);
@@ -43,7 +45,7 @@ export default function AddWineScreen() {
   const handleSubmit = () => {
     const { name, type, brand, price } = form;
 
-    if (!name || !type || !brand || !price) {
+    if (!name || !type || !brand || !price || !stock) {
       Alert.alert('Validation', 'Please fill out all fields');
       return;
     }
@@ -53,6 +55,7 @@ export default function AddWineScreen() {
         ...editing,
         ...form,
         price: parseFloat(price),
+        stock: parseInt(stock, 10),
       });
     } else {
       const newWine = {
@@ -61,6 +64,7 @@ export default function AddWineScreen() {
         type,
         brand,
         price: parseFloat(price),
+        stock: parseInt(stock, 10),
       image: `https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/47996575869489.5c594d0824159.jpg`
     };
     addWine(newWine);
@@ -100,6 +104,14 @@ return (
       keyboardType="numeric"
       value={form.price}
       onChangeText={(text) => handleChange('price', text)}
+    />
+
+    <TextInput
+      style={styles.input}
+      placeholder="Stock (number of bottles)"
+      keyboardType="numeric"
+      value={form.stock}
+      onChangeText={(text) => handleChange('stock', text)}
     />
 
     <TouchableOpacity style={styles.button} onPress={handleSubmit}>
