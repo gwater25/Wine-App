@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Toast from 'react-native-toast-message';
 import {
   StyleSheet,
   View,
@@ -37,12 +38,19 @@ const LoginScreen = () => {
 
   const handleSubmit = () => {
     if (validateForm()) {
+      console.log("Submitted", username, password);
       setUsername("");
       setPassword("");
       setErrors({});
       navigation.navigate("Main", { screen: "Home" });
+  
+      Toast.show({
+        type: 'success',
+        text1: 'Login Successful!',
+        position: 'bottom',
+      });
     }
-  };
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
