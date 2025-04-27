@@ -13,6 +13,7 @@ import { WineProvider } from './context/WineContext';
 import Toast from 'react-native-toast-message';
 import AddWineScreen from './screens/AddWineScreen';
 import { WineInventoryProvider } from './context/WineInventoryContext';
+import InventoryReportScreen from './screens/InventoryReportScreen';
 
 
 const Stack = createStackNavigator();
@@ -53,6 +54,7 @@ export default function App() {
             <Stack.Screen name="Main" component={MainTabNavigator} />
             <Stack.Screen name="WineDetail" component={WineDetailScreen} />
             <Stack.Screen name="AddWine" component={AddWineScreen} />
+            <Stack.Screen name="InventoryReport" component={InventoryReportScreen} />
           </Stack.Navigator>
           </NavigationContainer>
           <Toast />

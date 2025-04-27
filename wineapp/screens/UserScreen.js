@@ -5,7 +5,6 @@ import Toast from 'react-native-toast-message';
 
 export default function UserScreen() {
   const navigation = useNavigation();
-
   const handleLogout = () => {
     navigation.navigate('Login');
 
@@ -22,6 +21,9 @@ export default function UserScreen() {
       <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
         <Text style={styles.logoutButtonText}>Logout</Text>
       </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('InventoryReport')} style={styles.reportButton}>
+      <Text style={styles.reportButtonText}>View Inventory Report</Text>
+       </TouchableOpacity>
     </View>
   );
 }
@@ -42,6 +44,18 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   logoutButtonText: {
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  reportButton: {
+    marginTop: 15,
+    backgroundColor: 'cornsilk',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  
+  reportButtonText: {
     color: 'black',
     fontWeight: 'bold',
   },
