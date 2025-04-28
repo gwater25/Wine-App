@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, TextInput, Text, Button, TouchableOpacity, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useInventory } from '../context/WineInventoryContext';
 import * as ImagePicker from 'expo-image-picker';
 import Toast from 'react-native-toast-message';
 
 const AddWineScreen = () => {
   const navigation = useNavigation();
-  const { addWine } = useInventory();
+  const route = useRoute();
+  const { wine } = route.params || {}; // Get wine if passed
 
-  const [name, setName] = useState('');
-  const [type, setType] = useState('');
-  const [brand, setBrand] = useState('');
-  const [price, setPrice] = useState('');
-  const [stock, setStock] = useState('');
-  const [image, setImage] = useState('');
+  const { addWine, updateWine } = useInventory();
+
+  const [name, setName] = useState(wine?.name || '');
+  const [type, setType] = useState(wine?.type || '');
+  const [brand, setBrand] = useState(wine?.brand || '');
+  const [price, setPrice] = useState(wine?.price?.toString() || '');
+  const [stock, setStock] = useState(wine?.stock?.toString() || '');
+  const [image, setImage] = useState(wine?.image || '');
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -30,7 +33,7 @@ const AddWineScreen = () => {
     }
   };
 
-  const handleAddWine = () => {
+  const handleSave = () => {
     if (!name || !type || !brand || !price || !stock) {
       Toast.show({
         type: 'error',
@@ -40,8 +43,8 @@ const AddWineScreen = () => {
       return;
     }
 
-    const newWine = {
-      id: Date.now(),
+    const wineData = {
+      id: wine ? wine.id : Date.now(), // Keep existing ID if editing
       name,
       type,
       brand,
@@ -50,12 +53,22 @@ const AddWineScreen = () => {
       image: image || 'https://via.placeholder.com/150',
     };
 
-    addWine(newWine);
-    Toast.show({
-      type: 'success',
-      text1: 'Wine Added!',
-      position: 'bottom',
-    });
+    if (wine) {
+      updateWine(wine.id, wineData);
+      Toast.show({
+        type: 'success',
+        text1: 'Wine Updated!',
+        position: 'bottom',
+      });
+    } else {
+      addWine(wineData);
+      Toast.show({
+        type: 'success',
+        text1: 'Wine Added!',
+        position: 'bottom',
+      });
+    }
+
     navigation.goBack();
   };
 
@@ -87,9 +100,7 @@ const AddWineScreen = () => {
         />
       ) : null}
 
-      <TouchableOpacity onPress={handleAddWine} style={styles.uploadButton}>
-        <Text style={styles.uploadButtonText}>Add Wine</Text>
-      </TouchableOpacity>
+      <Button title={wine ? "Save Changes" : "Add Wine"} onPress={handleSave} color="crimson" />
     </View>
   );
 };

@@ -9,7 +9,7 @@ import { MotiView } from 'moti';
 export default function WineDetailScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { wine } = route.params ?? {}; // Safe destructure
+  const { wine } = route.params || {}; // Safe destructure
 
   const { favorites, addToCellar, removeFromCellar, ratings, rateWine } = useWine();
   const { deleteWine } = useInventory();
