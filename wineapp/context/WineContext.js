@@ -1,60 +1,54 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 
 const WineContext = createContext();
 
 export const WineProvider = ({ children }) => {
-  const [favorites, setFavorites] = useState([]); // favorites are now wine IDs
+  const [favorites, setFavorites] = useState([]);
   const [ratings, setRatings] = useState({});
 
   useEffect(() => {
     const loadFavorites = async () => {
       try {
-        const storedFavorites = await AsyncStorage.getItem('favorites');
-        if (storedFavorites) {
-          setFavorites(JSON.parse(storedFavorites));
+        const favData = await AsyncStorage.getItem('favorites');
+        if (favData) {
+          setFavorites(JSON.parse(favData));
         }
       } catch (error) {
         console.error('Failed to load favorites', error);
       }
     };
-
     loadFavorites();
   }, []);
 
+  useEffect(() => {
+    AsyncStorage.setItem('favorites', JSON.stringify(favorites));
+  }, [favorites]);
+
   const addToCellar = (wine) => {
-    setFavorites((prev) => {
-      const updated = [...prev, wine.id];
-      AsyncStorage.setItem('favorites', JSON.stringify(updated));
+    if (!favorites.includes(wine.id)) {
+      setFavorites((prev) => [...prev, wine.id]);
       Toast.show({
         type: 'success',
         text1: 'Added to Cellar!',
         text2: `${wine.name} has been added.`,
         position: 'bottom',
       });
-      return updated;
-    });
+    }
   };
 
   const removeFromCellar = (wineId) => {
-    setFavorites((prev) => {
-      const updated = prev.filter((id) => id !== wineId);
-      AsyncStorage.setItem('favorites', JSON.stringify(updated));
-      Toast.show({
-        type: 'info',
-        text1: 'Removed from Cellar',
-        position: 'bottom',
-      });
-      return updated;
+    setFavorites((prev) => prev.filter((id) => id !== wineId));
+    Toast.show({
+      type: 'info',
+      text1: 'Removed from Cellar',
+      position: 'bottom',
     });
   };
 
   const rateWine = (wineId, rating) => {
-    setRatings((prev) => ({
-      ...prev,
-      [wineId]: rating,
-    }));
+    setRatings((prev) => ({ ...prev, [wineId]: rating }));
   };
 
   return (

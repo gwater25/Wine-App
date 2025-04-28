@@ -1,154 +1,138 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-} from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useState } from 'react';
+import { StyleSheet, View, TextInput, Text, Button, TouchableOpacity, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useInventory } from '../context/WineInventoryContext';
+import * as ImagePicker from 'expo-image-picker';
+import Toast from 'react-native-toast-message';
 
-export default function AddWineScreen() {
+const AddWineScreen = () => {
   const navigation = useNavigation();
-  const route = useRoute();
-  const { addWine, updateWine } = useInventory();
+  const { addWine } = useInventory();
 
-  const editing = route.params?.wine;
+  const [name, setName] = useState('');
+  const [type, setType] = useState('');
+  const [brand, setBrand] = useState('');
+  const [price, setPrice] = useState('');
+  const [stock, setStock] = useState('');
+  const [image, setImage] = useState('');
 
-  const [form, setForm] = useState({
-    name: '',
-    type: '',
-    brand: '',
-    price: '',
-    stock: '',
-  });
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
+    });
 
-  useEffect(() => {
-    if (editing) {
-      setForm({
-        name: editing.name,
-        type: editing.type,
-        brand: editing.brand,
-        price: editing.price.toString(),
-        stock: editing.stock !== undefined ? editing.stock.toString() : '0',
-      });
+    if (!result.canceled) {
+      console.log('Picked Image URI:', result.assets[0].uri);
+      setImage(result.assets[0].uri);
     }
-  }, [editing]);
-
-  const handleChange = (key, value) => {
-    setForm({ ...form, [key]: value });
   };
 
-  const handleSubmit = () => {
-    const { name, type, brand, price, stock } = form;
-
+  const handleAddWine = () => {
     if (!name || !type || !brand || !price || !stock) {
-      Alert.alert('Validation', 'Please fill out all fields');
+      Toast.show({
+        type: 'error',
+        text1: 'Please fill all fields',
+        position: 'bottom',
+      });
       return;
     }
 
-    if (editing) {
-      updateWine(editing.id, {
-        ...editing,
-        ...form,
-        price: parseFloat(price),
-        stock: parseInt(stock, 10),
-      });
-    } else {
-      const newWine = {
-        id: Date.now(),
-        name,
-        type,
-        brand,
-        price: parseFloat(price),
-        stock: parseInt(stock, 10),
-      image: `https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/47996575869489.5c594d0824159.jpg`
+    const newWine = {
+      id: Date.now(),
+      name,
+      type,
+      brand,
+      price: parseFloat(price),
+      stock: parseInt(stock),
+      image: image || 'https://via.placeholder.com/150',
     };
-    addWine(newWine);
-  }
 
-  navigation.goBack();
+    addWine(newWine);
+    Toast.show({
+      type: 'success',
+      text1: 'Wine Added!',
+      position: 'bottom',
+    });
+    navigation.goBack();
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.label}>Name</Text>
+      <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Wine Name" />
+
+      <Text style={styles.label}>Type</Text>
+      <TextInput style={styles.input} value={type} onChangeText={setType} placeholder="Wine Type" />
+
+      <Text style={styles.label}>Brand</Text>
+      <TextInput style={styles.input} value={brand} onChangeText={setBrand} placeholder="Brand" />
+
+      <Text style={styles.label}>Price</Text>
+      <TextInput style={styles.input} value={price} onChangeText={setPrice} placeholder="Price" keyboardType="numeric" />
+
+      <Text style={styles.label}>Stock</Text>
+      <TextInput style={styles.input} value={stock} onChangeText={setStock} placeholder="Stock" keyboardType="numeric" />
+
+      <TouchableOpacity onPress={pickImage} style={styles.uploadButton}>
+        <Text style={styles.uploadButtonText}>Pick an Image</Text>
+      </TouchableOpacity>
+
+      {image ? (
+        <Image
+          source={{ uri: image }}
+          style={styles.previewImage}
+        />
+      ) : null}
+
+      <TouchableOpacity onPress={handleAddWine} style={styles.uploadButton}>
+        <Text style={styles.uploadButtonText}>Add Wine</Text>
+      </TouchableOpacity>
+    </View>
+  );
 };
 
-return (
-  <ScrollView contentContainerStyle={styles.container}>
-    <Text style={styles.title}>{editing ? 'Update Wine' : 'Add New Wine'}</Text>
-
-    <TextInput
-      style={styles.input}
-      placeholder="Wine Name"
-      value={form.name}
-      onChangeText={(text) => handleChange('name', text)}
-    />
-
-    <TextInput
-      style={styles.input}
-      placeholder="Type (Red, White, etc.)"
-      value={form.type}
-      onChangeText={(text) => handleChange('type', text)}
-    />
-
-    <TextInput
-      style={styles.input}
-      placeholder="Brand"
-      value={form.brand}
-      onChangeText={(text) => handleChange('brand', text)}
-    />
-
-    <TextInput
-      style={styles.input}
-      placeholder="Price"
-      keyboardType="numeric"
-      value={form.price}
-      onChangeText={(text) => handleChange('price', text)}
-    />
-
-    <TextInput
-      style={styles.input}
-      placeholder="Stock (number of bottles)"
-      keyboardType="numeric"
-      value={form.stock}
-      onChangeText={(text) => handleChange('stock', text)}
-    />
-
-    <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-      <Text style={styles.buttonText}>{editing ? 'Update Wine' : 'Save Wine'}</Text>
-    </TouchableOpacity>
-  </ScrollView>
-);
-}
+export default AddWineScreen;
 
 const styles = StyleSheet.create({
-container: {
-  padding: 20,
-  backgroundColor: 'white',
-  flexGrow: 1,
-},
-title: {
-  fontSize: 22,
-  fontWeight: 'bold',
-  marginBottom: 20,
-  textAlign: 'center',
-},
-input: {
-  borderWidth: 1,
-  borderColor: '#ccc',
-  borderRadius: 8,
-  padding: 12,
-  marginBottom: 15,
-},
-button: {
-  backgroundColor: 'crimson',
-  padding: 15,
-  borderRadius: 10,
-  alignItems: 'center',
-},
-buttonText: {
-  color: 'white',
-  fontWeight: 'bold',
-  fontSize: 16,
-},
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: 'cornsilk',
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginTop: 10,
+    color: 'black',
+  },
+  input: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    marginTop: 5,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  uploadButton: {
+    backgroundColor: 'crimson',
+    padding: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  uploadButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  previewImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 8,
+    alignSelf: 'center',
+    marginBottom: 15,
+  },
 });

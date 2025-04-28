@@ -40,7 +40,7 @@ export default function WineDetailScreen() {
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri: wine.image }} style={styles.image} />
+      <Image source={{ uri: wine.image || "https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/47996575869489.5c594d0824159.jpg" }} style={styles.image} />
 
       <View style={styles.content}>
         <Text style={styles.name}>{wine.name}</Text>

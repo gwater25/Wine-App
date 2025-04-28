@@ -1,10 +1,9 @@
 import React from 'react';
 import { StyleSheet, FlatList, TouchableOpacity, Text, View, Image } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
 import { MotiView } from 'moti';
 import { useNavigation } from '@react-navigation/native';
-import { FontAwesome } from '@expo/vector-icons';
 import { useWine } from '../context/WineContext';
-
 
 const WineList = ({ wines, selectedType }) => {
   const navigation = useNavigation();
@@ -15,7 +14,7 @@ const WineList = ({ wines, selectedType }) => {
     : wines;
 
   const renderItem = ({ item }) => {
-    const isFavorited = favorites.some((w) => w.id === item.id);
+    const isFavorited = favorites.includes(item.id); // ✅ changed to ID check
 
     return (
       <TouchableOpacity onPress={() => navigation.navigate('WineDetail', { wine: item })}>
@@ -27,33 +26,35 @@ const WineList = ({ wines, selectedType }) => {
           style={styles.card}
         >
 
-          <Image source={{ uri: item.image }} style={styles.image} />
-
-          <View style={styles.info}>
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.detail}>{item.type} · {item.brand}</Text>
-            <Text style={styles.price}>${item.price}</Text>
-            <Text style={styles.stock}>Stock: {item.stock ?? 0} bottles</Text>
-          
-            <View style={styles.starsRow}>
-            {[1, 2, 3, 4, 5].map((star) => (
-              <FontAwesome
-              key={star}
-              name={(ratings[item.id] || 0 ) >= star ? 'star' : 'star-o'}
-              size={22}
-              color="gold"
-              style={styles.starIcon}
-              />
-              ))}
-            </View>
-          </View>
-
           {isFavorited && (
-            <View stylele={styles.favoritebadge}>
-              <FontAwesome name='heart' size={20} color='crimson' />
+            <View style={styles.favoriteBadge}>
+              <FontAwesome name="heart" size={20} color="crimson" />
             </View>
           )}
 
+          <Image
+            source={{ uri: item?.image || 'https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/47996575869489.5c594d0824159.jpg' }}
+            style={styles.image}
+          />
+
+          <View style={styles.info}>
+            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.meta}>{item.type} · {item.brand}</Text>
+            <Text style={styles.price}>${item.price}</Text>
+            <Text style={styles.stock}>Stock: {item.stock ?? 0} bottles</Text>
+
+            <View style={styles.starsRow}>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <FontAwesome
+                  key={star}
+                  name={(ratings[item.id] || 0) >= star ? 'star' : 'star-o'}
+                  size={16}
+                  color="gold"
+                  style={styles.starIcon}
+                />
+              ))}
+            </View>
+          </View>
         </MotiView>
       </TouchableOpacity>
     );
@@ -65,6 +66,7 @@ const WineList = ({ wines, selectedType }) => {
       keyExtractor={(item) => item.id.toString()}
       renderItem={renderItem}
       contentContainerStyle={styles.list}
+      extraData={favorites}
     />
   );
 };
@@ -79,21 +81,13 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 15,
     marginBottom: 12,
-    alignContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
     elevation: 5,
-    position: 'relative',
-  },
-  image: {
-    width: 80,
-    height: 80,
-    borderRadius: 10,
-    marginRight: 15,
-    top: 20,
-    backgroundColor: '#eee',
   },
   favoriteBadge: {
     position: 'absolute',
@@ -108,6 +102,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 3,
     zIndex: 1,
+  },
+  image: {
+    width: 80,
+    height: 80,
+    borderRadius: 10,
+    marginRight: 15,
+    backgroundColor: '#eee',
   },
   info: {
     flex: 1,
