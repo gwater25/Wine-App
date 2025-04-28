@@ -49,21 +49,22 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     backgroundColor: 'white',
-    borderRadius: 10,
+    borderRadius: 15,
     padding: 15,
-    marginBottom: 10,
+    marginBottom: 12,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 3 },
-    elevation: 4,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 5,
   },
   image: {
     width: 80,
     height: 80,
     borderRadius: 10,
     marginRight: 15,
+    backgroundColor: '#eee',
   },
   info: {
     flex: 1,
@@ -71,6 +72,12 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#222',
+  },
+  meta: {
+    fontSize: 14,
+    color: '#777',
+    marginTop: 4,
   },
   detail: {
     fontSize: 14,
@@ -80,7 +87,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 16,
     color: 'crimson',
-    marginTop: 6,
+    marginTop: 8,
   },
   stock: {
     fontSize: 12,
