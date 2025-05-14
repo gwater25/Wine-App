@@ -1,5 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { useEffect } from 'react';
+import { View, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -76,7 +77,7 @@ function AppWrapper() {
     };
 
     checkLowStock();
-  }, []);
+  }, [wines]);
 
   return (
     <NavigationContainer>
